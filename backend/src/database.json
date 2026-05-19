@@ -1,0 +1,13 @@
+[
+  {
+    "id": "1779190498368",
+    "_id": "1779190498368",
+    "username": "dsa_champion",
+    "email": "champion@dsa.com",
+    "password": "$2a$10$txfyU/3oQOMu8YpEXi5PlObaNjVWjSEbkhb.s8F62F3gtKFZwPSgu",
+    "completedProblems": {
+      "t0p0": true,
+      "t0p1": true
+    }
+  }
+]

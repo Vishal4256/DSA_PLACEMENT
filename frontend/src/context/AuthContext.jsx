@@ -91,9 +91,7 @@ export const AuthProvider = ({ children }) => {
         throw new Error(data.msg || 'Registration failed');
       }
 
-      localStorage.setItem('dsa_auth_token', data.token);
-      setToken(data.token);
-      setUser(data.user);
+      // Registration successful! Do not auto-login, require manual login.
       return { success: true };
     } catch (err) {
       setError(err.message);

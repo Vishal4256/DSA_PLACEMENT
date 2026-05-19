@@ -121,28 +121,21 @@ function AppContent() {
             </div>
           ) : (
             // Guest Navigation View
-            <>
-              <button className="nav-link-btn" onClick={() => setShowAuthModal('login')}>
-                Sign In
-              </button>
-              <button className="nav-action-btn-primary" onClick={() => setShowAuthModal('signup')}>
-                Sign Up
-              </button>
-            </>
+            <button className="nav-action-btn-primary" onClick={() => setShowAuthModal('login')}>
+              Sign In / Sign Up
+            </button>
           )}
         </div>
       </nav>
 
-      {/* Header and overall progress */}
-      <header className="fade-in">
-        <div className="header-top-row" style={{ marginBottom: '2rem' }}>
-          <div className="header-content">
-            <h1>Apna College DSA Dashboard</h1>
-            <p className="subtitle">Master Shradha Ma'am's curated Apna College question bank of 375 placement problems.</p>
-          </div>
+      {/* Header and overall progress side-by-side */}
+      <header className="fade-in" style={{ marginBottom: '3rem' }}>
+        <div className="header-content" style={{ flex: 1, minWidth: '300px' }}>
+          <h1 style={{ margin: 0 }}>DSA Placement Mastery</h1>
+          <p className="subtitle" style={{ marginTop: '0.5rem' }}>Your ultimate premium dashboard featuring 375 handpicked standard data structures & algorithms placement problems.</p>
         </div>
 
-        <div className="glass overall-progress-card">
+        <div className="glass overall-progress-card" style={{ flex: '0 0 360px', margin: 0 }}>
           <div className="progress-info">
             <span className="progress-label">Total Progress {user ? '(Synced)' : '(Guest)'}</span>
             <span className="progress-value">{progressPercent}%</span>

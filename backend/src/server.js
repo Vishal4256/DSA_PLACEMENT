@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const { connectDB } = require('./config/db');
 
+// Initialize and connect MERN application server
 // Load env vars
 dotenv.config();
 

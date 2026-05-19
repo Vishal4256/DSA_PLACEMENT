@@ -31,7 +31,8 @@ const Signup = ({ setView }) => {
     setLoading(false);
 
     if (result.success) {
-      if (typeof setView === 'function') setView(null);
+      alert('Registration successful! Please sign in to continue.');
+      if (typeof setView === 'function') setView('login');
     } else {
       setError(result.error || 'Registration failed');
     }
