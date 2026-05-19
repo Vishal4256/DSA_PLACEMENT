@@ -12,23 +12,29 @@ import ResetPassword from './components/ResetPassword';
 
 function AppContent() {
   const { user, loading, logout, syncProgress } = useAuth();
-  const [authView, setAuthView] = useState('login'); // login, signup, forgot, reset
+  const [showAuthModal, setShowAuthModal] = useState(null); // 'login', 'signup', 'forgot', 'reset', or null
   const [resetToken, setResetToken] = useState('');
   
   const [completedProblems, setCompletedProblems] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
   const [filterDifficulty, setFilterDifficulty] = useState('All');
 
-  // Load progress from user object when logged in
+  // Load progress dynamically:
+  // - If LOGGED IN: load progress from the user's synced database map.
+  // - If GUEST (logged out): load progress from standard localStorage so they get a working demonstration!
   useEffect(() => {
-    if (user && user.completedProblems) {
-      // If completedProblems is a Map, convert it to a standard JS object
+    if (user) {
       const progressObj = user.completedProblems instanceof Map 
         ? Object.fromEntries(user.completedProblems)
         : user.completedProblems;
       setCompletedProblems(progressObj || {});
     } else {
-      setCompletedProblems({});
+      const localProgress = localStorage.getItem('dsa_guest_completed_problems');
+      try {
+        setCompletedProblems(localProgress ? JSON.parse(localProgress) : {});
+      } catch (err) {
+        setCompletedProblems({});
+      }
     }
   }, [user]);
 
@@ -42,8 +48,14 @@ function AppContent() {
         newState[key] = true;
       }
       
-      // Sync progress with backend MongoDB database asynchronously
-      syncProgress(newState);
+      if (user) {
+        // Sync with MongoDB backend in real-time
+        syncProgress(newState);
+      } else {
+        // Guest mode fallback persistence in localStorage
+        localStorage.setItem('dsa_guest_completed_problems', JSON.stringify(newState));
+      }
+      
       return newState;
     });
   };
@@ -83,48 +95,56 @@ function AppContent() {
     );
   }
 
-  // Auth pages view routing if not logged in
-  if (!user) {
-    switch (authView) {
-      case 'signup':
-        return <Signup setView={setAuthView} />;
-      case 'forgot':
-        return <ForgotPassword setView={setAuthView} setResetToken={setResetToken} />;
-      case 'reset':
-        return <ResetPassword setView={setAuthView} resetToken={resetToken} />;
-      case 'login':
-      default:
-        return <Login setView={setAuthView} />;
-    }
-  }
-
   return (
     <div className="container">
       <PracticeTimer />
 
-      <header className="fade-in">
-        <div className="header-top-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <div className="header-content">
-            <h1>DSA Mastery</h1>
-            <p className="subtitle">Premium placement preparation platform for mastering algorithms.</p>
-          </div>
+      {/* Sticky Navigation Bar */}
+      <nav className="glass navbar fade-in">
+        <div className="nav-brand">
+          <h2 onClick={() => setShowAuthModal(null)}>DSA Mastery</h2>
+        </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <div className="user-profile-badge">
-              <div className="user-avatar">
-                {user.username ? user.username[0].toUpperCase() : 'U'}
+        <div className="nav-actions">
+          {user ? (
+            // Logged in Navigation View
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+              <div className="user-profile-badge">
+                <div className="user-avatar">
+                  {user.username ? user.username[0].toUpperCase() : 'U'}
+                </div>
+                <span className="user-name">{user.username}</span>
               </div>
-              <span className="user-name">{user.username}</span>
+              <button className="logout-btn-header" onClick={logout}>
+                Sign Out
+              </button>
             </div>
-            <button className="logout-btn-header" onClick={logout}>
-              Sign Out
-            </button>
+          ) : (
+            // Guest Navigation View
+            <>
+              <button className="nav-link-btn" onClick={() => setShowAuthModal('login')}>
+                Sign In
+              </button>
+              <button className="nav-action-btn-primary" onClick={() => setShowAuthModal('signup')}>
+                Sign Up
+              </button>
+            </>
+          )}
+        </div>
+      </nav>
+
+      {/* Header and overall progress */}
+      <header className="fade-in">
+        <div className="header-top-row" style={{ marginBottom: '2rem' }}>
+          <div className="header-content">
+            <h1>Apna College DSA Dashboard</h1>
+            <p className="subtitle">Master Shradha Ma'am's curated Apna College question bank of 375 placement problems.</p>
           </div>
         </div>
 
         <div className="glass overall-progress-card">
           <div className="progress-info">
-            <span className="progress-label">Total Progress</span>
+            <span className="progress-label">Total Progress {user ? '(Synced)' : '(Guest)'}</span>
             <span className="progress-value">{progressPercent}%</span>
           </div>
           <div className="progress-bar-bg">
@@ -134,6 +154,7 @@ function AppContent() {
         </div>
       </header>
 
+      {/* Main Interactive Workspace */}
       <main className="dashboard-layout">
         <aside className="sidebar">
           <StatsDashboard topics={topics} completedProblems={completedProblems} />
@@ -172,6 +193,24 @@ function AppContent() {
           </div>
         </section>
       </main>
+
+      {/* Global Glassmorphic Auth Modal Overlay System */}
+      {showAuthModal && (
+        <div className="auth-modal-overlay">
+          <div className="auth-modal-content">
+            {/* Close Button */}
+            <button className="modal-close-btn" onClick={() => setShowAuthModal(null)}>
+              &times;
+            </button>
+            
+            {/* Active Authentication Screen */}
+            {showAuthModal === 'login' && <Login setView={setShowAuthModal} />}
+            {showAuthModal === 'signup' && <Signup setView={setShowAuthModal} />}
+            {showAuthModal === 'forgot' && <ForgotPassword setView={setShowAuthModal} setResetToken={setResetToken} />}
+            {showAuthModal === 'reset' && <ResetPassword setView={setShowAuthModal} resetToken={resetToken} />}
+          </div>
+        </div>
+      )}
 
       <footer className="footer">
         <p>© 2026 DSA Mastery Platform. Engineered for top-tier placements.</p>

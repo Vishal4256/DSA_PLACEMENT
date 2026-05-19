@@ -20,7 +20,9 @@ const Login = ({ setView }) => {
     const result = await login(email, password);
     setLoading(false);
 
-    if (!result.success) {
+    if (result.success) {
+      if (typeof setView === 'function') setView(null);
+    } else {
       setError(result.error || 'Invalid credentials');
     }
   };

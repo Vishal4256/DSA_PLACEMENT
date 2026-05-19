@@ -30,7 +30,9 @@ const Signup = ({ setView }) => {
     const result = await register(username, email, password);
     setLoading(false);
 
-    if (!result.success) {
+    if (result.success) {
+      if (typeof setView === 'function') setView(null);
+    } else {
       setError(result.error || 'Registration failed');
     }
   };
