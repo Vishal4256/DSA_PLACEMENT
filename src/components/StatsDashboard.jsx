@@ -2,9 +2,9 @@ import React from 'react';
 
 const StatsDashboard = ({ topics, completedProblems }) => {
   const stats = {
-    Easy: { total: 0, completed: 0, color: '#3fb950' },
-    Medium: { total: 0, completed: 0, color: '#d29922' },
-    Hard: { total: 0, completed: 0, color: '#f85149' },
+    Easy: { total: 0, completed: 0, color: '#10b981' },
+    Medium: { total: 0, completed: 0, color: '#f59e0b' },
+    Hard: { total: 0, completed: 0, color: '#ef4444' },
   };
 
   topics.forEach((topic, tIdx) => {
