@@ -26,9 +26,28 @@ const ProblemRow = ({ problem, topicIdx, probIdx, isCompleted, onToggle, searchQ
           />
           <span className="checkmark"></span>
         </label>
-        <span className="problem-name">
-          <HighlightText text={problem.name} highlight={searchQuery} />
-        </span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <span className="problem-name">
+            <HighlightText text={problem.name} highlight={searchQuery} />
+          </span>
+          {(problem.companies || problem.remarks) && (
+            <div className="problem-meta-container" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '2px' }}>
+              {problem.companies && problem.companies.split(' ').map((company, idx) => {
+                const trimmed = company.trim();
+                return trimmed ? (
+                  <span key={idx} className="company-badge">
+                    {trimmed}
+                  </span>
+                ) : null;
+              })}
+              {problem.remarks && (
+                <span className="remark-badge">
+                  💡 {problem.remarks}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
       <div className="problem-right">
         <span className={`difficulty-badge difficulty-${problem.difficulty.toLowerCase()}`}>

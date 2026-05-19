@@ -769,3 +769,32 @@ header {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Company and Remark Badges */
+.company-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.company-badge:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--text-primary);
+}
+
+.remark-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--medium);
+  background: var(--medium-bg);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
